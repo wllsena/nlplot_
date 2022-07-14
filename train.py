@@ -29,8 +29,8 @@ if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained('AhmedSSoliman/MarianCG-NL-to-Code') # './tokenizer')  
 
     def preprocess(examples):
-        model_inputs = tokenizer(examples['source'], max_length=128, padding=True, truncation=True)
-        labels = tokenizer(examples['label'], max_length=128, padding=True, truncation=True)
+        model_inputs = tokenizer(examples['source'], max_length=256, padding=True, truncation=True)
+        labels = tokenizer(examples['label'], max_length=256, padding=True, truncation=True)
 
         model_inputs['labels'] = labels['input_ids']
 
