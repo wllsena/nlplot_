@@ -7,21 +7,21 @@ Author: William Sena <@wllsena>.
 
 import pandas as pd
 from datasets import Dataset
-from transformers import (AutoModelForSeq2SeqLM, AutoTokenizer,
-                          DataCollatorForSeq2Seq, Seq2SeqTrainer,
-                          Seq2SeqTrainingArguments, AutoModelWithLMHead)
+from transformers import (AutoModelForSeq2SeqLM, AutoModelWithLMHead,
+                          AutoTokenizer, DataCollatorForSeq2Seq,
+                          Seq2SeqTrainer, Seq2SeqTrainingArguments)
 
 if __name__ == "__main__":
     train_df = pd.read_csv('./dataset/final/train.csv', usecols=['source', 'label'])
-    train_df = 'translate English to vega-zero: ' + train_df + ' </s>'
+    train_df['source'] = 'translate English to vega-zero: ' + train_df['source'] + ' </s>'
     train_ds = Dataset.from_pandas(train_df)
 
     test_df = pd.read_csv('./dataset/final/test.csv', usecols=['source', 'label'])
-    test_df = 'translate English to vega-zero: ' + test_df + ' </s>'
+    test_df['source'] = 'translate English to vega-zero: ' + test_df['source'] + ' </s>'
     test_ds = Dataset.from_pandas(test_df)
 
     dev_df = pd.read_csv('./dataset/final/dev.csv', usecols=['source', 'label'])
-    dev_df = 'translate English to vega-zero: ' + dev_df + ' </s>'
+    dev_df['source'] = 'translate English to vega-zero: ' + dev_df['source'] + ' </s>'
     dev_ds = Dataset.from_pandas(dev_df)
 
     all_df = pd.concat((train_df, test_df, dev_df))
