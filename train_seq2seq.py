@@ -9,22 +9,26 @@ import pandas as pd
 from datasets import Dataset
 from transformers import (AutoModelForSeq2SeqLM, AutoTokenizer,
                           DataCollatorForSeq2Seq, Seq2SeqTrainer,
-                          Seq2SeqTrainingArguments)
+                          Seq2SeqTrainingArguments, AutoModelWithLMHead)
 
 if __name__ == "__main__":
     train_df = pd.read_csv('./dataset/final/train.csv', usecols=['source', 'label'])
+    train_df = 'translate English to vega-zero: ' + train_df + ' </s>'
     train_ds = Dataset.from_pandas(train_df)
 
     test_df = pd.read_csv('./dataset/final/test.csv', usecols=['source', 'label'])
+    test_df = 'translate English to vega-zero: ' + test_df + ' </s>'
     test_ds = Dataset.from_pandas(test_df)
 
     dev_df = pd.read_csv('./dataset/final/dev.csv', usecols=['source', 'label'])
+    dev_df = 'translate English to vega-zero: ' + dev_df + ' </s>'
     dev_ds = Dataset.from_pandas(dev_df)
 
     all_df = pd.concat((train_df, test_df, dev_df))
     all_ds = Dataset.from_pandas(all_df)
 
-    tokenizer = AutoTokenizer.from_pretrained('AhmedSSoliman/MarianCG-NL-to-Code')
+    #tokenizer = AutoTokenizer.from_pretrained('AhmedSSoliman/MarianCG-NL-to-Code')
+    tokenizer = AutoTokenizer.from_pretrained('mrm8488/t5-base-finetuned-wikiSQL')
 
     def preprocess(examples):
         model_inputs = tokenizer(examples['source'], max_length=512, padding=True, truncation=True)
@@ -43,7 +47,8 @@ if __name__ == "__main__":
     test.set_format(type='torch', columns=columns_to_return)
     dev.set_format(type='torch', columns=columns_to_return)
 
-    model = AutoModelForSeq2SeqLM.from_pretrained('AhmedSSoliman/MarianCG-NL-to-Code')
+    #model = AutoModelForSeq2SeqLM.from_pretrained('AhmedSSoliman/MarianCG-NL-to-Code')
+    model = AutoModelWithLMHead.from_pretrained("mrm8488/t5-base-finetuned-wikiSQL")
 
     data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model)
 
