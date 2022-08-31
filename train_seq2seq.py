@@ -14,14 +14,17 @@ from transformers import (AutoModelForSeq2SeqLM, AutoModelWithLMHead,
 if __name__ == "__main__":
     train_df = pd.read_csv('./dataset/final/train.csv', usecols=['source', 'label'])
     train_df['source'] = 'translate English to vega-zero: ' + train_df['source'] + ' </s>'
+    train_df['label'] = '<pad> ' + train_df['label']
     train_ds = Dataset.from_pandas(train_df)
 
     test_df = pd.read_csv('./dataset/final/test.csv', usecols=['source', 'label'])
     test_df['source'] = 'translate English to vega-zero: ' + test_df['source'] + ' </s>'
+    test_df['label'] = '<pad> ' + test_df['label']
     test_ds = Dataset.from_pandas(test_df)
 
     dev_df = pd.read_csv('./dataset/final/dev.csv', usecols=['source', 'label'])
     dev_df['source'] = 'translate English to vega-zero: ' + dev_df['source'] + ' </s>'
+    dev_df['label'] = '<pad> ' + dev_df['label']
     dev_ds = Dataset.from_pandas(dev_df)
 
     all_df = pd.concat((train_df, test_df, dev_df))
