@@ -1,8 +1,17 @@
-if __name__ == "__main__":
-    import pandas as pd
-    from datasets import Dataset
-    from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments, DataCollatorForLanguageModeling
+# -*- coding: utf-8 -*-
+__author__ = "William Sena <@wllsena>"
+"""
+Style Guide: PEP 8. Column limit: 100.
+Author: William Sena <@wllsena>.
+"""
 
+import pandas as pd
+from datasets import Dataset
+from transformers import (AutoModelForCausalLM, AutoTokenizer,
+                          DataCollatorForLanguageModeling, Trainer,
+                          TrainingArguments)
+
+if __name__ == "__main__":
     train_df = pd.read_csv('./dataset/final/train.csv', usecols=['source'])
     train_ds = Dataset.from_pandas(train_df)
 
@@ -33,9 +42,9 @@ if __name__ == "__main__":
     dev.set_format(type='torch', columns=columns_to_return)
 
     model = AutoModelForCausalLM.from_pretrained('gpt2')
-    
+
     data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
-    
+
     training_args = TrainingArguments(
         output_dir='./results_causal',
         evaluation_strategy='epoch',

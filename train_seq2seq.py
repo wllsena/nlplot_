@@ -1,8 +1,17 @@
-if __name__ == "__main__":
-    import pandas as pd
-    from datasets import Dataset
-    from transformers import AutoModelForSeq2SeqLM, Seq2SeqTrainingArguments, Seq2SeqTrainer, DataCollatorForSeq2Seq, AutoTokenizer
+# -*- coding: utf-8 -*-
+__author__ = "William Sena <@wllsena>"
+"""
+Style Guide: PEP 8. Column limit: 100.
+Author: William Sena <@wllsena>.
+"""
 
+import pandas as pd
+from datasets import Dataset
+from transformers import (AutoModelForSeq2SeqLM, AutoTokenizer,
+                          DataCollatorForSeq2Seq, Seq2SeqTrainer,
+                          Seq2SeqTrainingArguments)
+
+if __name__ == "__main__":
     train_df = pd.read_csv('./dataset/final/train.csv', usecols=['source', 'label'])
     train_ds = Dataset.from_pandas(train_df)
 
@@ -14,18 +23,8 @@ if __name__ == "__main__":
 
     all_df = pd.concat((train_df, test_df, dev_df))
     all_ds = Dataset.from_pandas(all_df)
-    
-    #from tokenizers import normalizers, pre_tokenizers, ByteLevelBPETokenizer
 
-    #tokenizer = ByteLevelBPETokenizer()
-    #tokenizer.normalizer = normalizers.Lowercase()
-    #tokenizer.pre_tokenizer = pre_tokenizers.WhitespaceSplit()
-
-    #tokenizer.train_from_iterator(all_ds['source'] + all_ds['label'])
-
-    #tokenizer.save_model('./tokenizer')
-
-    tokenizer = AutoTokenizer.from_pretrained('AhmedSSoliman/MarianCG-NL-to-Code') # './tokenizer')  
+    tokenizer = AutoTokenizer.from_pretrained('AhmedSSoliman/MarianCG-NL-to-Code')
 
     def preprocess(examples):
         model_inputs = tokenizer(examples['source'], max_length=512, padding=True, truncation=True)
@@ -43,9 +42,9 @@ if __name__ == "__main__":
     train.set_format(type='torch', columns=columns_to_return)
     test.set_format(type='torch', columns=columns_to_return)
     dev.set_format(type='torch', columns=columns_to_return)
-    
+
     model = AutoModelForSeq2SeqLM.from_pretrained('AhmedSSoliman/MarianCG-NL-to-Code')
-    
+
     data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model)
 
     training_args = Seq2SeqTrainingArguments(
